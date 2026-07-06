@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐱 Desktop Pet</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+  <link rel="stylesheet" href="assets/css/ui.css" />
+</head>
+<body>
+  <!-- World / stage -->
+  <div id="world">
+    <div id="bg-layer"></div>
+    <div id="weather-particles"></div>
+    <div id="room-decor"></div>
+
+    <!-- Visitor pet -->
+    <div id="visitor-wrap" style="display:none">
+      <canvas id="visitor-canvas" width="48" height="48"></canvas>
+      <div id="visitor-bubble" class="speech-bubble"></div>
+    </div>
+
+    <!-- Main pet -->
+    <div id="pet-wrap">
+      <div id="hat-layer"></div>
+      <canvas id="pet-canvas" width="64" height="64"></canvas>
+      <div id="dream-bubble" style="display:none">💭</div>
+    </div>
+
+    <!-- Food / toy item -->
+    <div id="item-el" style="display:none"></div>
+
+    <!-- Speech bubble -->
+    <div id="speech-bubble" class="speech-bubble"></div>
+
+    <!-- Achievement toast -->
+    <div id="achievement-toast"></div>
+
+    <!-- Photo flash -->
+    <div id="photo-flash"></div>
+
+    <!-- UFO rare event -->
+    <div id="ufo" style="display:none">🛸</div>
+  </div>
+
+  <!-- UI Panel -->
+  <div id="ui-panel">
+    <!-- Top row: name, time, coins -->
+    <div class="ui-top-row">
+      <span id="pet-name-el"></span>
+      <span id="time-greeting"></span>
+      <span id="coins-el"></span>
+    </div>
+
+    <!-- Emotion + stats -->
+    <div class="ui-mid-row">
+      <div id="emotion-el"></div>
+      <div class="stats-grid">
+        <div class="stat"><span>🍖</span><div class="stat-bar"><div id="hunger-fill" class="stat-fill"></div></div><span id="hunger-val">0</span></div>
+        <div class="stat"><span>⚡</span><div class="stat-bar"><div id="energy-fill" class="stat-fill"></div></div><span id="energy-val">0</span></div>
+        <div class="stat"><span>❤️</span><div class="stat-bar"><div id="happy-fill"  class="stat-fill"></div></div><span id="happy-val">0</span></div>
+        <div class="stat"><span>💊</span><div class="stat-bar"><div id="health-fill" class="stat-fill"></div></div><span id="health-val">0</span></div>
+      </div>
+    </div>
+
+    <!-- Personality + age badge -->
+    <div class="badge-row">
+      <span id="personality-badge" class="badge"></span>
+      <span id="age-badge" class="badge"></span>
+      <span id="birthday-badge" class="badge" style="display:none">🎂 Birthday!</span>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="btn-row">
+      <button class="btn" onclick="window.petActions.feed()">🍖 Feed</button>
+      <button class="btn" onclick="window.petActions.play()">🎾 Play</button>
+      <button class="btn" onclick="window.petActions.pet()">🤗 Pet</button>
+      <button class="btn" onclick="window.petActions.giveToy()">🧸 Toy</button>
+      <button class="btn" onclick="window.petActions.adventure()">🗺️ Explore</button>
+      <button class="btn" onclick="window.petActions.photo()">📷 Photo</button>
+      <button class="btn" onclick="window.petActions.rename()">✏️ Rename</button>
+      <button class="btn" onclick="window.petActions.claimDaily()">🎁 Daily</button>
+    </div>
+
+    <!-- Weather row -->
+    <div class="weather-row">
+      <button class="weather-btn" data-w="sunny"  onclick="window.worldControls.setWeather('sunny')">☀️</button>
+      <button class="weather-btn" data-w="rain"   onclick="window.worldControls.setWeather('rain')">🌧️</button>
+      <button class="weather-btn" data-w="snow"   onclick="window.worldControls.setWeather('snow')">❄️</button>
+      <button class="weather-btn" data-w="night"  onclick="window.worldControls.setWeather('night')">🌙</button>
+    </div>
+
+    <!-- Room row -->
+    <div class="room-row">
+      <button class="room-btn" data-r="bedroom" onclick="window.worldControls.setRoom('bedroom')">🛏️ Bedroom</button>
+      <button class="room-btn" data-r="garden"  onclick="window.worldControls.setRoom('garden')">🌿 Garden</button>
+      <button class="room-btn" data-r="kitchen" onclick="window.worldControls.setRoom('kitchen')">🍳 Kitchen</button>
+      <button class="room-btn" data-r="beach"   onclick="window.worldControls.setRoom('beach')">🏖️ Beach</button>
+      <button class="room-btn" data-r="space"   onclick="window.worldControls.setRoom('space')">🚀 Space</button>
+    </div>
+
+    <!-- Hat + skin row -->
+    <div class="extras-row">
+      <span class="extras-label">Hat:</span>
+      <div id="hat-picker">
+        <span class="hat-opt" data-hat=""   onclick="window.petActions.pickHat(this,'')">🚫</span>
+        <span class="hat-opt" data-hat="🎩" onclick="window.petActions.pickHat(this,'🎩')">🎩</span>
+        <span class="hat-opt" data-hat="👑" onclick="window.petActions.pickHat(this,'👑')">👑</span>
+        <span class="hat-opt" data-hat="🕶️" onclick="window.petActions.pickHat(this,'🕶️')">🕶️</span>
+        <span class="hat-opt" data-hat="🎀" onclick="window.petActions.pickHat(this,'🎀')">🎀</span>
+        <span class="hat-opt" data-hat="🧙" onclick="window.petActions.pickHat(this,'🧙')">🧙</span>
+        <span class="hat-opt" data-hat="🎃" onclick="window.petActions.pickHat(this,'🎃')">🎃</span>
+        <span class="hat-opt" data-hat="🤠" onclick="window.petActions.pickHat(this,'🤠')">🤠</span>
+        <span class="hat-opt" data-hat="🦄" onclick="window.petActions.pickHat(this,'🦄')">🦄</span>
+      </div>
+    </div>
+
+    <!-- Log -->
+    <div id="log"></div>
+  </div>
+
+  <!-- Voice button (floating) -->
+  <button id="voice-btn" onclick="window.voiceControl.toggle()" title="Voice commands">🎤</button>
+
+  <!-- Scripts (order matters) -->
+  <script src="assets/js/constants.js"></script>
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/renderer.js"></script>
+  <script src="assets/js/emotions.js"></script>
+  <script src="assets/js/personality.js"></script>
+  <script src="assets/js/weather.js"></script>
+  <script src="assets/js/events.js"></script>
+  <script src="assets/js/actions.js"></script>
+  <script src="assets/js/voice.js"></script>
+  <script src="assets/js/miniGames.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
